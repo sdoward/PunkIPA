@@ -7,6 +7,7 @@ import rx.Observable
 class RealmStorage(private val realm: Realm) : Storage {
 
     override fun getBeers(): Observable<List<Beer>> {
+        val realm = Realm.getDefaultInstance()
         return realm.where(BeerData::class.java).findAll()
                 .asObservable()
                 .map {
@@ -17,6 +18,7 @@ class RealmStorage(private val realm: Realm) : Storage {
     }
 
     override fun putBeer(beer: Beer) {
+        val realm = Realm.getDefaultInstance()
         val beerData = BeerData()
         beerData.id = beer.id
         beerData.name = beer.name

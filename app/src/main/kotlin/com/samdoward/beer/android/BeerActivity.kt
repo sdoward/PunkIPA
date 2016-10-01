@@ -4,7 +4,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.util.Log
+import com.samdoward.beer.android.data.BeerServiceImp
+import com.samdoward.beer.android.data.FakePunkApi
 import com.samdoward.beer.android.data.PunkApi
+import com.samdoward.beer.android.data.database.RealmStorage
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.beer_activity.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -33,7 +38,11 @@ class BeerActivity : AppCompatActivity() {
                 .build()
 
         val punkApi = retrofit.create(PunkApi::class.java)
-        punkApi.getBeers()
+        Realm.init(this)
+        val realm = Realm.getDefaultInstance()
+
+        BeerServiceImp(FakePunkApi(), RealmStorage(realm))
+                .getBeers()
                 .subscribeOn(io())
                 .subscribe(
                         { Log.d("something", it.size.toString()) },
