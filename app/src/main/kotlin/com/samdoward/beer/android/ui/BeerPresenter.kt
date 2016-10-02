@@ -1,19 +1,19 @@
 package com.samdoward.beer.android.ui
 
+import com.cruxapp.android.core.threading.ThreadTransfomer
 import com.samdoward.beer.android.data.Beer
 import com.samdoward.beer.android.data.BeerService
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.Subscriptions
 
-class BeerPresenter(private val beerService: BeerService, private val beerView: BeerView) {
+class BeerPresenter(private val beerService: BeerService,
+                    private val beerView: BeerView,
+                    private val threadTransfomer: ThreadTransfomer) {
 
     private var subscription = Subscriptions.empty()
 
     fun start() {
         subscription = beerService.getBeers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(threadTransfomer.applySchedulers<List<Beer>>())
                 .subscribe({ beerView.displayBeers(it) }, { it.printStackTrace() })
     }
 
