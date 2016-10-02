@@ -1,5 +1,6 @@
 package com.samdoward.beer.android.data.network
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
@@ -36,6 +37,7 @@ class APIModule {
         return OkHttpClient.Builder()
                 .hostnameVerifier { s, sslSession -> true }
                 .sslSocketFactory(sslSocketFactory)
+                .addNetworkInterceptor(StethoInterceptor())
                 .authenticator { route, response ->
                     val credentials = Credentials.basic("52f7cdcf4d7b4f5f9caee7d28e20c60f", "")
                     response.request().newBuilder().header("Authorization", credentials).build()

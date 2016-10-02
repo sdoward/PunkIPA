@@ -17,6 +17,7 @@ class BeerOpenDatabaseHelper(context: Context) : SQLiteOpenHelper(context, null,
         db.execSQL(BeerModel.CREATE_TABLE)
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase, p1: Int, p2: Int) {
+    override fun onUpgrade(database: SQLiteDatabase, p1: Int, p2: Int) {
+        onCreate(database)
     }
 }

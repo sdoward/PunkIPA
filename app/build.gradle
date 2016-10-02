@@ -52,6 +52,9 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
+  compile 'com.facebook.stetho:stetho:1.4.1'
+  compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
+
   testCompile 'junit:junit:4.12'
   testCompile 'com.nhaarman:mockito-kotlin:0.6.2'
   testCompile "org.jetbrains.kotlin:kotlin-stdlib:1.0.3"//waiting until the lib has been updated
