@@ -1,5 +1,6 @@
-package com.samdoward.beer.android.data
+package com.samdoward.beer.android.data.network
 
+import com.samdoward.beer.android.data.Beer
 import rx.Observable
 
 class FakePunkApi : PunkApi {

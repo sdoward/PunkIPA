@@ -1,4 +1,4 @@
-package com.samdoward.beer.android.data.database
+package com.samdoward.beer.android.data
 
 import com.samdoward.beer.android.data.Beer
 import rx.Observable

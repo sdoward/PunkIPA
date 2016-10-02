@@ -1,4 +1,4 @@
-package com.samdoward.beer.android.data
+package com.samdoward.beer.android.data.network
 
 import retrofit2.http.GET
 import rx.Observable

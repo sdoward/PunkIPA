@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.samdoward.beer.android.R
 import com.samdoward.beer.android.data.BeerServiceImp
-import com.samdoward.beer.android.data.PunkApi
+import com.samdoward.beer.android.data.network.PunkApi
 import com.samdoward.beer.android.data.database.realm.RealmStorage
 import com.samdoward.beer.android.data.database.sql.BeerOpenDatabaseHelper
 import com.samdoward.beer.android.data.database.sql.SqlStorage
