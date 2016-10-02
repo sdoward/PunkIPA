@@ -1,28 +1,27 @@
-package com.samdoward.beer.android
+package com.samdoward.beer.android.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Base64
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import com.samdoward.beer.android.R
 import com.samdoward.beer.android.data.BeerServiceImp
-import com.samdoward.beer.android.data.FakePunkApi
 import com.samdoward.beer.android.data.PunkApi
 import com.samdoward.beer.android.data.database.realm.RealmStorage
 import com.samdoward.beer.android.data.database.sql.BeerOpenDatabaseHelper
 import com.samdoward.beer.android.data.database.sql.SqlStorage
 import io.realm.Realm
-import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.beer_activity.*
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
+import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class BeerActivity : AppCompatActivity() {
@@ -31,6 +30,7 @@ class BeerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.beer_activity)
         setSupportActionBar(toolbar)
+        recyclerView.layoutManager = LinearLayoutManager(this)
         val trustManager = object : X509TrustManager {
             override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {
             }
@@ -44,7 +44,7 @@ class BeerActivity : AppCompatActivity() {
 
         }
         val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, arrayOf(trustManager), java.security.SecureRandom())
+        sslContext.init(null, arrayOf(trustManager), SecureRandom())
         val sslSocketFactory = sslContext.getSocketFactory();
 
         val okHttp = OkHttpClient.Builder()
@@ -75,8 +75,12 @@ class BeerActivity : AppCompatActivity() {
         BeerServiceImp(punkApi, sqlStorage)
                 .getBeers()
                 .subscribeOn(io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { Log.d("something", it.size.toString()) },
+                        {
+                            Log.d("count", "count is: " + it.size)
+                            recyclerView.adapter = BeerAdapter(it)
+                        },
                         { it.printStackTrace() })
 
     }
