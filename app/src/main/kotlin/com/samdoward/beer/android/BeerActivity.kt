@@ -13,11 +13,17 @@ import com.samdoward.beer.android.data.database.sql.SqlStorage
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.beer_activity.*
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import rx.schedulers.Schedulers.io
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class BeerActivity : AppCompatActivity() {
 
@@ -25,12 +31,31 @@ class BeerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.beer_activity)
         setSupportActionBar(toolbar)
+        val trustManager = object : X509TrustManager {
+            override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {
+            }
+
+            override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {
+            }
+
+            override fun getAcceptedIssuers(): Array<out X509Certificate> {
+                return emptyArray()
+            }
+
+        }
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, arrayOf(trustManager), java.security.SecureRandom())
+        val sslSocketFactory = sslContext.getSocketFactory();
+
         val okHttp = OkHttpClient.Builder()
+                .hostnameVerifier { s, sslSession -> true }
+                .sslSocketFactory(sslSocketFactory)
                 .addInterceptor {
-                    val bytes = Base64.encode("52f7cdcf4d7b4f5f9caee7d28e20c60f".toByteArray(), Base64.NO_WRAP)
-                    val request = it.request().newBuilder().addHeader("Authorization", "Basic ".plus(bytes)).build()
+                    val credentials = Credentials.basic("52f7cdcf4d7b4f5f9caee7d28e20c60f", "")
+                    val request = it.request().newBuilder().addHeader("Authorization", credentials).build()
                     it.proceed(request)
-                }.build()
+                }
+                .build()
 
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -42,10 +67,12 @@ class BeerActivity : AppCompatActivity() {
         val punkApi = retrofit.create(PunkApi::class.java)
         Realm.init(this)
         val realm = Realm.getDefaultInstance()
+        val realmStorage = RealmStorage(realm)
 
         val database = BeerOpenDatabaseHelper(this).writableDatabase
+        val sqlStorage = SqlStorage(database)
 
-        BeerServiceImp(FakePunkApi(), SqlStorage(database))
+        BeerServiceImp(punkApi, sqlStorage)
                 .getBeers()
                 .subscribeOn(io())
                 .subscribe(

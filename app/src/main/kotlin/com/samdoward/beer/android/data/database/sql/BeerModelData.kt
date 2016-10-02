@@ -2,8 +2,8 @@ package com.samdoward.beer.android.data.database.sql
 
 import com.sdoward.beer.android.data.database.sql.BeerModel
 
-class BeerModelData(val id: Int, val name: String, val tagLine: String, val description: String, val abv: Double,
-                    val foodPairing: String) : BeerModel {
+class BeerModelData(val id: Int, val name: String, val tagLine: String?, val description: String, val abv: Double,
+                    val foodPairing: String?) : BeerModel {
 
     override fun _id(): Long {
         return id.toLong()
@@ -14,7 +14,11 @@ class BeerModelData(val id: Int, val name: String, val tagLine: String, val desc
     }
 
     override fun tagline(): String {
-        return tagLine
+        if (tagLine == null) {
+            return ""
+        } else {
+            return tagLine
+        }
     }
 
     override fun description(): String {
@@ -26,6 +30,10 @@ class BeerModelData(val id: Int, val name: String, val tagLine: String, val desc
     }
 
     override fun food_paring(): String {
-        return foodPairing
+        if (foodPairing == null) {
+            return ""
+        } else {
+            return foodPairing
+        }
     }
 }
