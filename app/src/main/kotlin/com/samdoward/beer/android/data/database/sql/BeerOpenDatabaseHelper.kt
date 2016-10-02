@@ -5,11 +5,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.sdoward.beer.android.data.database.sql.BeerModel
 
-class BeerOpenDatabaseHelper(context: Context) : SQLiteOpenHelper(context, null, null, BeerOpenDatabaseHelper.DATABASE_VERSION) {
+class BeerOpenDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
 
         private val DATABASE_VERSION = 2
+        private val DATABASE_NAME = "beer"
 
     }
 
@@ -18,6 +19,5 @@ class BeerOpenDatabaseHelper(context: Context) : SQLiteOpenHelper(context, null,
     }
 
     override fun onUpgrade(database: SQLiteDatabase, p1: Int, p2: Int) {
-        onCreate(database)
     }
 }
