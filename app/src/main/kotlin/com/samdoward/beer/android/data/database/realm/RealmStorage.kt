@@ -1,6 +1,7 @@
-package com.samdoward.beer.android.data.database
+package com.samdoward.beer.android.data.database.realm
 
 import com.samdoward.beer.android.data.Beer
+import com.samdoward.beer.android.data.database.Storage
 import io.realm.Realm
 import rx.Observable
 

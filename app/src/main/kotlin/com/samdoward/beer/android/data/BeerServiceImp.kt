@@ -9,6 +9,8 @@ class BeerServiceImp(private val punkApi: PunkApi, private val storage: Storage)
 
     override fun getBeers(): Observable<List<Beer>> {
         return punkApi.getBeers()
+                .doOnNext { it.forEach { storage.putBeer(it) } }
+                .flatMap { storage.getBeers() }
 
     }
 

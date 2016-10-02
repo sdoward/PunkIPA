@@ -1,4 +1,4 @@
-package com.samdoward.beer.android.data.database
+package com.samdoward.beer.android.data.database.realm
 
 import io.realm.RealmObject
 

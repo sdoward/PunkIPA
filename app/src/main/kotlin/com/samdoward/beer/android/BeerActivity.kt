@@ -7,7 +7,9 @@ import android.util.Log
 import com.samdoward.beer.android.data.BeerServiceImp
 import com.samdoward.beer.android.data.FakePunkApi
 import com.samdoward.beer.android.data.PunkApi
-import com.samdoward.beer.android.data.database.RealmStorage
+import com.samdoward.beer.android.data.database.realm.RealmStorage
+import com.samdoward.beer.android.data.database.sql.BeerOpenDatabaseHelper
+import com.samdoward.beer.android.data.database.sql.SqlStorage
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.beer_activity.*
@@ -41,7 +43,9 @@ class BeerActivity : AppCompatActivity() {
         Realm.init(this)
         val realm = Realm.getDefaultInstance()
 
-        BeerServiceImp(FakePunkApi(), RealmStorage(realm))
+        val database = BeerOpenDatabaseHelper(this).writableDatabase
+
+        BeerServiceImp(FakePunkApi(), SqlStorage(database))
                 .getBeers()
                 .subscribeOn(io())
                 .subscribe(
